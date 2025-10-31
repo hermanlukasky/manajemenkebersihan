@@ -14,6 +14,12 @@ import {
   Play, AlertCircle, TrendingUp, Star, Upload, X
 } from 'lucide-react'
 
+import { useRealtimePegawai } from '@/hooks/useRealtimePegawai'
+import { useSession } from 'next-auth/react'
+
+// ========================
+// 🧩 Interfaces / TypeScript types
+// ========================
 interface ProfileData {
   id: string
   namaLengkap: string
