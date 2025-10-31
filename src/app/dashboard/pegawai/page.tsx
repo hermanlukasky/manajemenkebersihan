@@ -9,20 +9,9 @@ import { Progress } from '@/components/ui/progress'
 import { NotificationSystem } from '@/components/ui/notification'
 import { LogoutButton } from '@/components/ui/logout-button'
 import { API_CONFIG } from '@/lib/api-config'
-import { 
-  User, 
-  Calendar, 
-  Clock, 
-  CheckCircle, 
-  MapPin, 
-  Camera, 
-  FileText,
-  Play,
-  AlertCircle,
-  TrendingUp,
-  Star,
-  Upload,
-  X
+import {
+  User, Calendar, Clock, CheckCircle, MapPin, Camera, FileText,
+  Play, AlertCircle, TrendingUp, Star, Upload, X
 } from 'lucide-react'
 
 interface ProfileData {
