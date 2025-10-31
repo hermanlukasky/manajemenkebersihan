@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Kantor {
+  id          String    @id @default(cuid())
+  nama        String
+  alamat      String
+  lokasiMap   String?
+  trackingGeo Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  jadwal      Jadwal[]
+  pegawai     Pegawai[]
+  ruangan     Ruangan[]
+}
+
+model Pegawai {
+  id             String     @id @default(cuid())
+  namaLengkap    String
+  jenisKelamin   String
+  nomorTelp      String
+  username       String     @unique
+  password       String
+  role           String
+  status         String
+  tanggalMasuk   DateTime
+  suratKontrak   String?
+  kantorId       String
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  inspeksi       Inspeksi[]
+  jadwalAssigned Jadwal[]
+  kantor         Kantor     @relation(fields: [kantorId], references: [id])
+}
+
+model Ruangan {
+  id              String   @id @default(cuid())
+  nama            String
+  tipeArea        String
+  deskripsi       String?
+  tingkatLantai   Int
+  status          String
+  customChecklist String?
+  kantorId        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  jadwal          Jadwal[]
+  kantor          Kantor   @relation(fields: [kantorId], references: [id])
+}
+
+model Jadwal {
+  id          String    @id @default(cuid())
+  namaTugas   String
+  ruanganId   String
+  hariTanggal DateTime
+  jamMulai    String
+  jamSelesai  String
+  pegawaiId   String
+  kantorId    String
+  status      String    @default("Scheduled")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  kantor      Kantor    @relation(fields: [kantorId], references: [id])
+  pegawai     Pegawai   @relation(fields: [pegawaiId], references: [id], onDelete: Cascade)
+  ruangan     Ruangan   @relation(fields: [ruanganId], references: [id])
+  laporan     Laporan[]
+}
+
+model Laporan {
+  id          String     @id @default(cuid())
+  jadwalId    String
+  checklist   String
+  fotoMasalah String?
+  komentar    String?
+  status      String     @default("Pending")
+  totalPoint  Int        @default(0)
+  persentase  Float      @default(0)
+  isNotified  Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  evaluasi    Evaluasi[]
+  inspeksi    Inspeksi[]
+  jadwal      Jadwal     @relation(fields: [jadwalId], references: [id])
+}
+
+model Inspeksi {
+  id          String   @id @default(cuid())
+  laporanId   String
+  rating      Int
+  komentar    String?
+  inspectorId String
+  isVerified  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  inspector   Pegawai  @relation(fields: [inspectorId], references: [id], onDelete: Cascade)
+  laporan     Laporan  @relation(fields: [laporanId], references: [id])
+}
+
+model Evaluasi {
+  id        String   @id @default(cuid())
+  laporanId String
+  kategori  String
+  point     Int
+  maxPoint  Int
+  catatan   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  laporan   Laporan  @relation(fields: [laporanId], references: [id])
+}
