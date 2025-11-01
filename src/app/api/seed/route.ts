@@ -1,8 +1,14 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import bcrypt from 'bcryptjs'
 
 export async function POST() {
   try {
+    // 🔑 Hash password sebelum disimpan
+    const hashPassword = async (plain: string) => {
+      const salt = await bcrypt.genSalt(10)
+      return await bcrypt.hash(plain, salt)
+    }
     // Create Kantor
     const kantor = await db.kantor.create({
       data: {
@@ -20,7 +26,7 @@ export async function POST() {
         jenisKelamin: 'Laki-laki',
         nomorTelp: '08123456789',
         username: 'admin',
-        password: 'admin123',
+        password: await hashPassword('admin123'), // 🔒 hashed password
         role: 'Admin',
         status: 'Aktif',
         tanggalMasuk: new Date('2023-01-01'),
@@ -34,7 +40,7 @@ export async function POST() {
         jenisKelamin: 'Laki-laki',
         nomorTelp: '08123456780',
         username: 'budi',
-        password: 'pegawai123',
+        password: await hashPassword('pegawai123'),
         role: 'Pegawai',
         status: 'Aktif',
         tanggalMasuk: new Date('2023-01-15'),
@@ -48,7 +54,7 @@ export async function POST() {
         jenisKelamin: 'Perempuan',
         nomorTelp: '08123456781',
         username: 'siti',
-        password: 'pegawai123',
+        password: await hashPassword('pegawai123'),
         role: 'Pegawai',
         status: 'Aktif',
         tanggalMasuk: new Date('2023-02-01'),
@@ -62,7 +68,7 @@ export async function POST() {
         jenisKelamin: 'Laki-laki',
         nomorTelp: '08123456782',
         username: 'ahmad',
-        password: 'pegawai123',
+        password: await hashPassword('pegawai123'),
         role: 'Pegawai',
         status: 'Aktif',
         tanggalMasuk: new Date('2023-03-01'),
